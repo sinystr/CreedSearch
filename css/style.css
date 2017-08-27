@@ -1,0 +1,82 @@
+body
+{
+  font-family: 'Open Sans', sans-serif;
+  color:#4c4d53;
+  font-size: 18px;
+  background: #ffffff;
+  background: -moz-linear-gradient(top, #ffffff 70%, #eaeef2 100%);
+  background: -webkit-linear-gradient(top, #ffffff 70%,#eaeef2 100%);
+  background: linear-gradient(to bottom, #ffffff 70%,#eaeef2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eaeef2',GradientType=0 );
+}
+
+h1
+{
+  font-family: 'Roboto', sans-serif;  
+  font-size: 72px;
+  text-align: center;
+  margin:150px 0 50px 0;
+}
+
+label
+{
+  float: left;
+  margin: 0 0 5px 0;
+  font-size:23px;
+  line-height: 45px;
+  font-weight: normal;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+#search-form
+{
+  width: 600px;
+  margin:0 auto;
+}
+
+#search-form #search-text
+{
+  width:600px;
+  height: 50px;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 17px;
+  border: 1px solid #c0c3ce;
+  margin-bottom: 20px;
+}
+
+#search-form #search-site
+{
+  width:250px;
+  height: 50px;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 17px;
+  border: 1px solid #c0c3ce;
+  margin-left: 10px;
+  color:#377fc7;
+}
+
+#search-form input[type="submit"]
+{
+  background: #3b87d3;
+  color:#fff;
+  border: 0px;
+  height: 50px;
+  border-radius: 8px;
+  font-size: 17px;
+  padding:0px;
+  width:120px;
+  float:right;
+}
+
+#search-form input[type="submit"]:active
+{
+  background: #377fc7;
+}
