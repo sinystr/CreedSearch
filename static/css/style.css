@@ -4,10 +4,10 @@ body
   color:#4c4d53;
   font-size: 18px;
   background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 70%, #eaeef2 100%);
-  background: -webkit-linear-gradient(top, #ffffff 70%,#eaeef2 100%);
-  background: linear-gradient(to bottom, #ffffff 70%,#eaeef2 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eaeef2',GradientType=0 );
+  background: -moz-linear-gradient(top, #ffffff 70%, #eaeaea 100%);
+  background: -webkit-linear-gradient(top, #ffffff 70%,#eaeaea 100%);
+  background: linear-gradient(to bottom, #ffffff 70%,#eaeaea 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eaeaea',GradientType=0 );
 }
 
 h1
