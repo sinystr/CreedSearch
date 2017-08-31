@@ -48,7 +48,8 @@ button:focus {
   padding: 0 15px;
   font-size: 17px;
   border: 1px solid #c0c3ce;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  color:#52565a;
 }
 
 #search-form #search-site
