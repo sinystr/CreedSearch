@@ -11,80 +11,85 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
-// CrawlerEngine defines a default crawling engine for Creed
-type Engine struct {
-
-}
-
-type Link struct {
-	url   string
-	text  string
-	depth int
+type CrawledPage struct { 
+	page models.Page 
+	links map[string]struct{}
 }
 
 type HttpError struct {
 	original string
 }
 
-func (self Link) String() string {
-	spacer := strings.Repeat("\t", self.depth)
-	return fmt.Sprintf("%s%s (%d) - %s", spacer, self.text, self.depth, self.url)
-}
-
-func (self Link) Valid() bool {
-	if self.depth >= MaxDepth {
-		return false
-	}
-
-	if len(self.text) == 0 {
-		return false
-	}
-	if len(self.url) == 0 || strings.Contains(strings.ToLower(self.url), "javascript") {
-		return false
-	}
-
-	return true
-}
-
 func (self HttpError) Error() string {
 	return self.original
 }
 
-var MaxDepth = 2
-
-func LinkReader(resp *http.Response, depth int) []Link {
-	page := html.NewTokenizer(resp.Body)
-	links := []Link{}
+func htmlReader(url string, resp *http.Response) (page models.Page, links map[string]struct{}){
+	links = make(map[string]struct{})
+	page.Url = url
+	parsedHTML := html.NewTokenizer(resp.Body)
 
 	var start *html.Token
 	var text string
 
 	for {
-		_ = page.Next()
-		token := page.Token()
+		_ = parsedHTML.Next()
+		token := parsedHTML.Token()
+
 		if token.Type == html.ErrorToken {
 			break
 		}
 
 		if start != nil && token.Type == html.TextToken {
 			text = fmt.Sprintf("%s%s", text, token.Data)
+			// fmt.Println("Token text - %s", text)
+			// fmt.Println("Token data - %s", token.Data)
 		}
 
-		if token.DataAtom == atom.A {
+		// Manage title of the page
+		if token.DataAtom == atom.Title {
+			switch token.Type {
+				case html.StartTagToken:
+					start = &token
+
+				case html.EndTagToken:
+					if start == nil {
+						// log.Warnf("Title End found without Start: %s", text)
+						continue
+					}
+
+					page.Title = text
+
+					start = nil
+					text = ""
+				}
+		}
+
+		if token.DataAtom == atom.A || token.DataAtom == atom.P {
 			switch token.Type {
 			case html.StartTagToken:
-				if len(token.Attr) > 0 {
+				if token.DataAtom == atom.A && len(token.Attr) > 0 || token.DataAtom == atom.P{
 					start = &token
 				}
+
 			case html.EndTagToken:
 				if start == nil {
 					log.Warnf("Link End found without Start: %s", text)
 					continue
 				}
-				link := NewLink(*start, text, depth)
-				if link.Valid() {
-					links = append(links, link)
-					log.Debugf("Link Found %v", link)
+
+				if(token.DataAtom == atom.P && len(text) > 0){
+					page.Strings = append(page.Strings, text)
+
+				} else if (token.DataAtom == atom.A) {
+					for i := range start.Attr {
+						if start.Attr[i].Key == "href" {
+							link := strings.TrimSpace(start.Attr[i].Val)
+							if(len(link) > 0){
+								links[link] = struct{}{}
+							}
+						}
+					}
 				}
 
 				start = nil
@@ -92,63 +97,27 @@ func LinkReader(resp *http.Response, depth int) []Link {
 			}
 		}
 	}
-
-	log.Debug(links)
-	return links
+	return
 }
 
-func NewLink(tag html.Token, text string, depth int) Link {
-	link := Link{text: strings.TrimSpace(text), depth: depth}
-
-	for i := range tag.Attr {
-		if tag.Attr[i].Key == "href" {
-			link.url = strings.TrimSpace(tag.Attr[i].Val)
-		}
-	}
-	return link
-}
-
-func recurDownloader(url string, depth int) {
-	page, err := downloader(url)
+func CrawlPage(url string) CrawledPage {
+	html, err := getHTML(url)
+	
 	if err != nil {
 		log.Error(err)
-		return
+		return CrawledPage{}
 	}
-	links := LinkReader(page, depth)
 
-	for _, link := range links {
-		fmt.Println(link)
-		if depth+1 < MaxDepth {
-			recurDownloader(link.url, depth+1)
-		}
-	}
+	page, links := htmlReader(url, html)
+	return CrawledPage{page: page, links: links}
 }
 
-func downloader(url string) (resp *http.Response, err error) {
-	log.Debugf("Downloading %s", url)
+func getHTML(url string) (resp *http.Response, err error) {
 	resp, err = http.Get(url)
-	if err != nil {
-		log.Debugf("Error: %s", err)
-		return
-	}
 
-	if resp.StatusCode > 299 {
-		err = HttpError{fmt.Sprintf("Error (%d): %s", resp.StatusCode, url)}
-		log.Debug(err)
-		return
-	}
+	// if resp.StatusCode > 299 {
+	// 	err = HttpError{fmt.Sprintf("Error (%d): %s", resp.StatusCode, url)}
+	// }
+
 	return
-
-}
-
-func (e *Engine) CrawlSite(site string) models.Site {
-	log.SetPriorityString("info")
-	log.SetPrefix("crawler")
-
-	recurDownloader(site, 0)
-	return models.Site{}
-}
-
-func DefaultEngine() *Engine {
-	return &Engine{}
 }

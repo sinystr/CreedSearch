@@ -37,7 +37,7 @@ func (c *Creed) setSearchEngine(searchEngine *SearchEngine) {
 
 func (c *Creed) startServer() {
 	var crawler CrawlingEngine = crawler.DefaultEngine()
-	crawler.CrawlSite("http://www.google.com")
+	crawler.CrawlSite("http://fmi.ruby.bg/")
 	return;
 
 	mux := http.NewServeMux()

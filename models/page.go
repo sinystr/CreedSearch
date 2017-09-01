@@ -2,6 +2,7 @@ package models
 
 type Page struct 
 {
-	page string
-	strings []string
+	Title string
+	Url string
+	Strings []string
 }

@@ -15,7 +15,42 @@ h1
   font-family: 'Roboto', sans-serif;  
   font-size: 72px;
   text-align: center;
+}
+
+#main-page h1
+{
   margin:150px 0 50px 0;
+}
+
+#search-results, #info-page
+{
+  background: #ffffff;
+  padding-bottom: 100px;
+}
+
+#search-results h1
+{
+  margin:70px 0 30px 0;
+}
+
+#message-page
+{
+  margin:70px 0 30px 0;
+} 
+
+#search-results h5
+{
+  text-align: left;
+  font-size: 19px;
+  text-align: center;
+  color:#606469;
+  font-weight: normal;
+}
+
+hr
+{
+  color:#606469;
+  margin:25px 0 35px;
 }
 
 label
@@ -80,4 +115,58 @@ button:focus {
 #search-form input[type="submit"]:active
 {
   background: #377fc7;
+}
+
+#search-results .container, #info-page .container
+{
+  width:550px;
+  margin:0 auto;
+}
+
+#search-results ul
+{
+  list-style: none;
+  padding-left: 0;
+}
+
+#search-results ul li
+{
+  margin:10px 0;
+}
+
+#search-results ul li a
+{
+  color:#3b87d3;
+  font-size:17px;
+  line-height: 32px;
+}
+
+#search-results ul li p
+{
+  line-height: 23px;
+  margin: 0;
+}
+
+#info-page h1
+{
+  margin:230px 0 0px 0;
+}
+
+#info-page h5
+{
+  text-align: left;
+  font-size: 24px;
+  text-align: center;
+  color:#377fc7;
+  font-weight: normal;
+  margin-top:35px;
+  margin-bottom: 15px;
+}
+
+#info-page a
+{
+  color:#52565a;
+  text-align: center;
+  width: 100%;
+  display: block;
 }
