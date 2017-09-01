@@ -13,5 +13,5 @@ type SearchEngine interface {
 }
 
 type CrawlingEngine interface {
-	CrawlSite(site string) models.Site
+	CrawlSite(site string) (models.Site, error)
 }

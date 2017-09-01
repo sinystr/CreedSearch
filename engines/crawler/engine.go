@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	// "strings"
 	"../../models"
 	"context"
+	"net/url"
 	// "strings"
 )
 
@@ -21,7 +21,15 @@ func logPage(page CrawledPage){
 	// }
 }
 
-func (e *Engine) CrawlSite(site string) models.Site {
+// CrawlSite accepts string value of a website address and returns
+// crawled site structure
+func (e *Engine) CrawlSite(site string) (models.Site, error) {
+	siteURL, err := url.ParseRequestURI(site)
+
+	if err != nil {
+	   return models.Site{}, err
+	}
+
 	pagesToBeCrawled := []string{}
 	crawledPages := map[string]struct{}{}
 	
@@ -41,7 +49,7 @@ func (e *Engine) CrawlSite(site string) models.Site {
 		for _, page := range parsedPages {
 			returnPages = append(returnPages, page.page)
 			logPage(page)
-			fitlerLinks(site, &crawledPages, &page.links)
+			fitlerLinks(siteURL, &crawledPages, &page.links)
 			for link := range page.links {
 				pagesToBeCrawled = append(pagesToBeCrawled, link)
 			}
@@ -49,10 +57,10 @@ func (e *Engine) CrawlSite(site string) models.Site {
 
 	}
 	
-	return models.Site{ Address: site, Pages: returnPages }
+	return models.Site{ Address: site, Pages: returnPages }, nil
 }
 
-func fitlerLinks(site string, crawledPages *map[string]struct{}, links *map[string]struct{}){
+func fitlerLinks(site *url.URL, crawledPages *map[string]struct{}, links *map[string]struct{}){
 	for link := range *links {
 		_, found := (*crawledPages)[link]
 		// if(!strings.Contains(link, "") || found){
@@ -77,5 +85,5 @@ func crawlPages(pages []string) (crawledPages []CrawledPage) {
 
 // DefaultEngine return the crawling engine using the default configuration
 func DefaultEngine() *Engine {
-	return &Engine{crawlingDeph: 3}
+	return &Engine{crawlingDeph: 1}
 }
