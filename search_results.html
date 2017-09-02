@@ -13,33 +13,15 @@
     <body id="search-results">
       <h1>CREED</h1>
       <div class="container">
-        <h5>Страници в www.gimn-popovo.com които съдържат "Георги Николаев" :</h5>
+        <h5>Страници в {{.Address}} които съдържат "Георги Николаев" :</h5>
         <hr/> 
         <ul>
-            <li>
-                <p>Статии</p>
-                <a href="#">http://www.gimn-popovo.com/articles/</a>
-            </li>
-            <li>
-                <p>Постове</p>
-                <a href="#">http://www.gimn-popovo.com/posts/</a>
-            </li>
-            <li>
-                <p>Акаунти</p>
-                <a href="#">http://www.gimn-popovo.com/accounts/</a>
-            </li>  
-            <li>
-                <p>Статии</p>
-                <a href="#">http://www.gimn-popovo.com/articles/</a>
-            </li>
-            <li>
-                <p>Постове</p>
-                <a href="#">http://www.gimn-popovo.com/posts/</a>
-            </li>
-            <li>
-                <p>Акаунти</p>
-                <a href="#">http://www.gimn-popovo.com/accounts/</a>
-            </li>             
+            {{range .Pages}}
+                <li>
+                    <p>{{.Title}}</p>
+                    <a href="{{.Url}}">{{.Url}}</a>
+                </li>
+            {{ end }}           
         </ul>
       </div>
     </body>

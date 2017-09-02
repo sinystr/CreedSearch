@@ -1,16 +1,8 @@
 package main
 
-import (
-	// "strings"
-	"time"
-)
-
 func main() {
-
-	println("Start crawling: ", time.Now().String())
 	
-	creedServer := &Creed{}
-	creedServer.startServer()
+	creedServer := DefaultCreed()
+	creedServer.startServer(3000)
 
-    println("End crawling: ", time.Now().String())
 }

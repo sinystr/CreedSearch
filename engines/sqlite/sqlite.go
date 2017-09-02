@@ -26,18 +26,33 @@ func(e *Engine) ShouldSiteBeCrawled(siteAddress string) bool {
 	return time.Now().Sub(site.LastCrawled).Hours() > e.dataExpirationDuration.Hours()
 }
 
+// GetRecordForSite return site record from the database for siteName
 func(e *Engine) GetRecordForSite(siteName string) models.Site {
 	return models.Site{}
 }
 
-func(e *Engine) UpdateSiteRecord(siteRecord models.Site) {
+// SaveSiteRecord saves new or updates existing crawled site record to the database
+func(e *Engine) SaveSiteRecord (siteRecord models.Site) {
+	db := OpenDatabase()
+	defer db.Close()
+
+	user := Site{Address: siteRecord.Address}
 	
+	if (db.NewRecord(user)) {
+		user.LastCrawled = time.Now()
+		db.Create(&user)
+	}else{
+		db.Model(&user).Update("last_crawled", time.Now())
+	}
+
 }
 
+// SetDataExpirationTime sets crawed site expiration time
 func(e *Engine) SetDataExpirationTime(dataExpirationDuration time.Duration) {
 	e.dataExpirationDuration = dataExpirationDuration
 }
 
+// DefaultEngine returns the sqlite engine using the default configuration
 func DefaultEngine() *Engine {
 	return &Engine{dataExpirationDuration: time.Hour * 24}
 }

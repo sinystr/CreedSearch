@@ -12,11 +12,11 @@
   </head>
   <body id="main-page">
     <h1>CREED</h1>
-    <form id="search-form">
+    <form id="search-form" action='/search' method="GET">
       <label>Search for:</label>
       <input id="search-text" type="text" value="Example text" onfocus="if(this.value == 'Example text') {this.value=''}" onblur="if(this.value == ''){this.value ='Example text'}"/>
       <label>in</label>
-      <input id="search-site" type="text" value="www.example.com" onfocus="if(this.value == 'www.example.com') {this.value=''}" onblur="if(this.value == ''){this.value ='www.example.com'}"/>
+      <input id="search-site" name="site" type="text" value="www.example.com" onfocus="if(this.value == 'www.example.com') {this.value=''}" onblur="if(this.value == ''){this.value ='www.example.com'}"/>
       <input type="submit" value="Go"/>
     </form>
   </body>

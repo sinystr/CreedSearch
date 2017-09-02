@@ -5,7 +5,7 @@ import "./models"
 type DatabaseEngine interface {
 	ShouldSiteBeCrawled(site string) bool
 	GetRecordForSite(siteAddress string) models.Site
-	UpdateSiteRecord(siteRecord models.Site)
+	SaveSiteRecord(siteRecord models.Site)
 }
 	
 type SearchEngine interface {

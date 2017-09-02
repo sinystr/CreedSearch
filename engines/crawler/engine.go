@@ -1,24 +1,15 @@
 package crawler
 
 import (
+	"strings"
 	"../../models"
 	"context"
 	"net/url"
-	// "strings"
 )
 
+// Engine defines crawling engine for Creed
 type Engine struct {
 	crawlingDeph int
-}
-
-func logPage(page CrawledPage){
-	println("Page crawled");
-	println("Page title: ", page.page.Title)
-	println("Page address: ", page.page.Url)
-	// println("Found Strings: ")
-	// for _, pageString := range page.page.Strings {
-	// 	println(pageString)
-	// }
 }
 
 // CrawlSite accepts string value of a website address and returns
@@ -48,8 +39,8 @@ func (e *Engine) CrawlSite(site string) (models.Site, error) {
 
 		for _, page := range parsedPages {
 			returnPages = append(returnPages, page.page)
-			logPage(page)
-			fitlerLinks(siteURL, &crawledPages, &page.links)
+			
+			filterLinks(siteURL, &crawledPages, &page.links)
 			for link := range page.links {
 				pagesToBeCrawled = append(pagesToBeCrawled, link)
 			}
@@ -60,12 +51,22 @@ func (e *Engine) CrawlSite(site string) (models.Site, error) {
 	return models.Site{ Address: site, Pages: returnPages }, nil
 }
 
-func fitlerLinks(site *url.URL, crawledPages *map[string]struct{}, links *map[string]struct{}){
+func filterLinks(site *url.URL, crawledPages *map[string]struct{}, links *map[string]struct{}){
 	for link := range *links {
 		_, found := (*crawledPages)[link]
-		// if(!strings.Contains(link, "") || found){
+
 		if(found){
 			delete(*links, link)
+		}else{
+			if(link[0] == '/'){
+				delete(*links, link)
+				newLink := site.String() + link[1:len(link)]
+				(*links)[newLink] = struct{}{}
+			}else{
+				if(!strings.Contains(link, site.Hostname())){
+					delete(*links, link)
+				}
+			}
 		}
 	}
 }
@@ -85,5 +86,10 @@ func crawlPages(pages []string) (crawledPages []CrawledPage) {
 
 // DefaultEngine return the crawling engine using the default configuration
 func DefaultEngine() *Engine {
-	return &Engine{crawlingDeph: 1}
+	return &Engine{crawlingDeph: 2}
+}
+
+// EngineWithDepth returns crawing engine with custom depth
+func EngineWithDepth(depth int) *Engine {
+	return &Engine{crawlingDeph: depth}
 }
