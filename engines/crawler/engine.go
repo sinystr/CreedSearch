@@ -1,10 +1,10 @@
 package crawler
 
 import (
-	"strings"
 	"../../models"
 	"context"
 	"net/url"
+	"strings"
 )
 
 // Engine defines crawling engine for Creed
@@ -18,17 +18,17 @@ func (e *Engine) CrawlSite(site string) (models.Site, error) {
 	siteURL, err := url.ParseRequestURI(site)
 
 	if err != nil {
-	   return models.Site{}, err
+		return models.Site{}, err
 	}
 
 	pagesToBeCrawled := []string{}
 	crawledPages := map[string]struct{}{}
-	
+
 	pagesToBeCrawled = append(pagesToBeCrawled, site)
 
 	returnPages := []models.Page{}
 
-	for i := 0; i < e.crawlingDeph; i++{
+	for i := 0; i < e.crawlingDeph; i++ {
 		parsedPages := crawlPages(pagesToBeCrawled)
 
 		for _, page := range pagesToBeCrawled {
@@ -39,7 +39,7 @@ func (e *Engine) CrawlSite(site string) (models.Site, error) {
 
 		for _, page := range parsedPages {
 			returnPages = append(returnPages, page.page)
-			
+
 			filterLinks(siteURL, &crawledPages, &page.links)
 			for link := range page.links {
 				pagesToBeCrawled = append(pagesToBeCrawled, link)
@@ -47,23 +47,23 @@ func (e *Engine) CrawlSite(site string) (models.Site, error) {
 		}
 
 	}
-	
-	return models.Site{ Address: site, Pages: returnPages }, nil
+
+	return models.Site{Address: site, Pages: returnPages}, nil
 }
 
-func filterLinks(site *url.URL, crawledPages *map[string]struct{}, links *map[string]struct{}){
+func filterLinks(site *url.URL, crawledPages *map[string]struct{}, links *map[string]struct{}) {
 	for link := range *links {
 		_, found := (*crawledPages)[link]
 
-		if(found){
+		if found {
 			delete(*links, link)
-		}else{
-			if(link[0] == '/'){
+		} else {
+			if link[0] == '/' {
 				delete(*links, link)
 				newLink := site.String() + link[1:len(link)]
 				(*links)[newLink] = struct{}{}
-			}else{
-				if(!strings.Contains(link, site.Hostname())){
+			} else {
+				if !strings.Contains(link, site.Hostname()) {
 					delete(*links, link)
 				}
 			}

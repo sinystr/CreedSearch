@@ -1,8 +1,7 @@
 package models
 
-type Page struct 
-{
-	Title string
-	Url string
+type Page struct {
+	Title   string
+	Url     string
 	Strings []string
 }

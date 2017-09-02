@@ -7,7 +7,7 @@ type DatabaseEngine interface {
 	GetRecordForSite(siteAddress string) models.Site
 	SaveSiteRecord(siteRecord models.Site)
 }
-	
+
 type SearchEngine interface {
 	search(site models.Site, text string) []models.Page
 }

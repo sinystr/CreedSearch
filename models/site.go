@@ -1,7 +1,6 @@
 package models
 
-type Site struct 
-{
+type Site struct {
 	Address string
-	Pages []Page
+	Pages   []Page
 }
