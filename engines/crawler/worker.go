@@ -47,12 +47,8 @@ func merge(ctx context.Context, workers []chan CrawledPage) chan CrawledPage {
 	// Merged channel with results
 	out := make(chan CrawledPage)
 
-	// Synchronization over channels: do not close "out" before all tasks are completed
 	var wg sync.WaitGroup
 
-	// Define function which waits the result from worker channel
-	// and sends this result to the merged channel.
-	// Then it decreases the counter of running tasks via wg.Done().
 	output := func(c <-chan CrawledPage) {
 		defer wg.Done()
 		for result := range c {

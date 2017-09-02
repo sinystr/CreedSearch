@@ -7,6 +7,7 @@ import (
 	"time"
 	"text/template"
 	"./engines/crawler"
+	"./models"
 )
 
 // Creed is search engine written in Go
@@ -23,16 +24,30 @@ type Creed struct {
 
 }
 
+// SetDatabaseEngine upgrades the database engine of creed
 func (c *Creed) SetDatabaseEngine(databaseEngine DatabaseEngine) {
 	c.DatabaseEngine = databaseEngine
 }
 
+// SetCrawlingEngine upgrades the crawling engine of creed
 func (c *Creed) SetCrawlingEngine(crawlingEngine CrawlingEngine) {
 	c.CrawlingEngine = crawlingEngine
 }
 
+// SetSearchEngine upgrades the search engine of creed
 func (c *Creed) SetSearchEngine(searchEngine SearchEngine) {
 	c.SearchEngine = searchEngine
+}
+
+func printSite(site models.Site){
+	println("Site: ", site.Address)
+	println("Pages: ")
+	println("----------------------------")
+	for _, page := range site.Pages {
+		println("")
+		println("Title: ", page.Title)
+		println("URL: ", page.Url)
+	}
 }
 
 func (c *Creed) startServer(port int) {
@@ -49,8 +64,9 @@ func (c *Creed) startServer(port int) {
 			}
 			if req.URL.Path == "/search" {
 				searchSite := req.URL.Query()["site"][0]
-				var crawler CrawlingEngine = crawler.DefaultEngine()
-				site, err := crawler.CrawlSite(searchSite)
+				site, err := c.CrawlingEngine.CrawlSite(searchSite)
+
+				// printSite(site)
 
 				if(err != nil) {
 					t, _ := template.ParseFiles("message.html")
@@ -68,8 +84,6 @@ func (c *Creed) startServer(port int) {
 	s := &http.Server{Addr: fmt.Sprintf(":%d", port), Handler: mux, WriteTimeout: 1 * time.Second}
 	log.Printf("Starting server on %s", s.Addr)
 	log.Fatal(s.ListenAndServe())
-	
-	fmt.Println("Starting server...");
 }
 
 // DefaultCreed returns the default configuration Creed
